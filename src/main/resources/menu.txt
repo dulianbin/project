@@ -1,0 +1,16 @@
+{
+     "button":[
+     {	
+   
+     	"type":"click",
+         "name":"抢任务",
+         "url":"http://www.thubang.com/index/index"
+      }, 
+      {
+		  "type":"view",
+	       "name":"发任务",
+	       "url":"http://www.thubang.com/index/tomytask"
+       } ]
+ }
+ 
+ 

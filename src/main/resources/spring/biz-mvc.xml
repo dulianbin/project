@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd	
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- 通过注解，把URL映射到Controller上，该标签默认注册DefaultAnnotationHandlerMapping和AnnotationMethodHandlerAdapter -->
+	<mvc:annotation-driven/>	
+	<mvc:default-servlet-handler/>
+
+	<!-- 自动扫描controller包下的所有类，使其认为spring mvc的控制器， 但是不扫描service -->
+    <context:component-scan base-package="com.zhaopin.report">
+    	<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+    	<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service" />
+    </context:component-scan>
+	 
+	<mvc:annotation-driven>
+		<mvc:message-converters>
+			<bean
+				class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+				<property name="objectMapper" ref="customObjectMapper"></property>
+				<property name="supportedMediaTypes">
+					<list>
+						<value>text/html;charset=UTF-8</value>
+						<value>application/json;charset=UTF-8</value>
+					</list>
+				</property>
+			</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+	
+	<!-- 对模型视图名称的解析，即在模型视图名称添加前后缀 -->
+	<!-- <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver" 
+		p:prefix="/WEB-INF/jsp/" p:suffix=".jsp" /> -->
+	<!-- <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver"> 
+		</bean> -->
+
+<!-- 	<bean id="viewResolvers" class="com.kingleadsw.beautyfitness.resolver.MultiViewResover">
+		<property name="resolvers">
+			<map>
+				<entry key="default">
+					<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+						<property name="viewClass" value="org.springframework.web.servlet.view.InternalResourceView"></property>
+					</bean>
+				</entry>
+				<entry key="jsp">
+					<bean
+						class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+						<property name="prefix" value="/WEB-INF/jsp/" />
+						<property name="suffix" value=".jsp" />
+					</bean>
+				</entry>
+
+				<entry key="ftl">
+					freemarker页面解析器
+					<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+						<property name="suffix" value=".ftl"></property>
+						<property name="contentType" value="text/html;charset=UTF-8" />
+						<property name="viewClass" value="org.springframework.web.servlet.view.freemarker.FreeMarkerView" 
+							/>
+						将Spring的FreeMarkerView改成我们扩展的View
+						<property name="viewClass"
+							value="com.kingleadsw.beautyfitness.util.freemarker.FrontFreeMarkerView" />
+						<property name="exposeRequestAttributes" value="true" />
+						<property name="exposeSessionAttributes" value="true" />
+						<property name="exposeSpringMacroHelpers" value="true" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean> -->
+
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver"> 
+			 <property name="prefix" value="/WEB-INF/jsp/" />
+			 <property name="suffix" value=".jsp" />
+	</bean> 
+	 
+	 
+	<!-- 支持上传文件 -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver" >
+		 <property name="defaultEncoding">
+			<value>UTF-8</value>
+		</property>
+		<property name="maxUploadSize">
+			<value>2147483648</value>
+		</property>
+		</bean>
+
+	<bean id="customObjectMapper" class="com.zhaopin.report.common.json.CustomObjectMapper"></bean>
+
+	<bean
+		class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+		<property name="order" value="1" />
+		<property name="contentNegotiationManager">
+			<bean class="org.springframework.web.accept.ContentNegotiationManager">
+				<constructor-arg>
+					<bean
+						class="org.springframework.web.accept.PathExtensionContentNegotiationStrategy">
+						<constructor-arg>
+							<map>
+								<entry key="htm" value="text/html;charset=utf-8" />
+								<entry key="json" value="application/json;charset=utf-8" />
+								<entry key="xml" value="application/xml;charset=utf-8" />
+							</map>
+						</constructor-arg>
+					</bean>
+				</constructor-arg>
+			</bean>
+		</property>
+		<property name="defaultViews">
+			<list>
+				<!-- JSON View -->
+				<bean
+					class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<bean
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="synchronizeOnSession" value="true" />
+	</bean>
+
+	<mvc:interceptors>
+		<bean class="com.zhaopin.report.interceptor.SysLogInterceptor" />
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/tologin"/>
+            <mvc:exclude-mapping path="/login.htm"/>
+            <mvc:exclude-mapping path="/get_auth_code"/>
+            <mvc:exclude-mapping path="/checklogin"/>
+            <mvc:exclude-mapping path="/main"/> 
+            <bean class="com.zhaopin.report.interceptor.WebBasicInterceptor" >
+                <!-- 不需要权限验证的地址 -->
+                <property name="noFilterUrls">
+                    <list>
+                        <value>/tologin</value>
+                        <value>/checklogin</value>
+                        
+                    </list>
+                </property>
+            </bean>
+        </mvc:interceptor>
+	</mvc:interceptors>
+</beans>

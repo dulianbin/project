@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zhaopin.report.mapper.BudgetMapper" >
+  <resultMap id="BaseResultMap" type="com.zhaopin.report.mapper.model.Budget" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="apply_area" property="applyArea" jdbcType="VARCHAR" />
+    <result column="city_id" property="cityId" jdbcType="INTEGER" />
+    <result column="city" property="city" jdbcType="VARCHAR" />
+    <result column="apply_quarter" property="applyQuarter" jdbcType="VARCHAR" />
+    <result column="budget_fee" property="budgetFee" jdbcType="DECIMAL" />
+    <result column="operator" property="operator" jdbcType="VARCHAR" />
+    <result column="operator_no" property="operatorNo" jdbcType="VARCHAR" />
+    <result column="operator_time" property="operatorTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, apply_area, city_id, city, apply_quarter, budget_fee, operator, operator_no, 
+    operator_time
+  </sql>
+  <select id="queryOneById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_budget
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <select id="queryBudgetListPage" resultMap="BaseResultMap" parameterType="com.zhaopin.report.common.vo.PageData" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_budget where  1=1 
+    <if test="city !=null and city !=''">
+       AND city IN (${city})
+    </if>
+    <if test="applyQuarter !=null and applyQuarter !=''">
+       AND apply_quarter=#{applyQuarter} 
+    </if>
+  </select>
+  
+  <select id="queryAllBudgetList" resultMap="BaseResultMap" parameterType="com.zhaopin.report.common.vo.PageData" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_budget where  1=1 
+    <if test="city !=null and city !=''">
+       AND city IN (${city})
+    </if>
+    <if test="applyQuarter !=null and applyQuarter !=''">
+       AND apply_quarter=#{applyQuarter} 
+    </if>
+  </select>
+  
+  <select id="calBudgetFeeSum" resultType="java.util.Map" parameterType="com.zhaopin.report.common.vo.PageData" >
+    SELECT SUM(budget_fee) AS budget_fee_sum FROM t_budget WHERE city=#{city} AND apply_quarter IN (${quarter_list})
+  </select>
+  
+   <select id="queryYearBudgetFeeList" resultType="java.util.Map" parameterType="com.zhaopin.report.common.vo.PageData" >
+    SELECT temp.apply_quarter,SUM(sz) AS sz , SUM(gz) AS gz , SUM(cs) AS cs, SUM(fz) AS fz, SUM(nc) AS nc, SUM(fs) AS fs, SUM(xm) AS xm, 
+    SUM(dg) AS dg, SUM(qyyy) AS qyyy, SUM(zh) AS zh, SUM(hk) hk
+    FROM ( SELECT tb.apply_quarter,
+	    MAX(CASE tc.city WHEN '深圳' THEN IFNULL(tb.budget_fee,0) ELSE 0 END) AS 'sz',
+	    MAX(CASE tc.city WHEN '广州' THEN IFNULL(tb.budget_fee,0) ELSE 0 END) AS 'gz',
+	    MAX(CASE tc.city WHEN '长沙' THEN IFNULL(tb.budget_fee,0) ELSE 0 END) AS 'cs',
+	    MAX(CASE tc.city WHEN '福州' THEN IFNULL(tb.budget_fee,0) ELSE 0 END) AS 'fz',
+	    MAX(CASE tc.city WHEN '南昌' THEN IFNULL(tb.budget_fee,0) ELSE 0 END) AS 'nc',
+	    MAX(CASE tc.city WHEN '佛山' THEN IFNULL(tb.budget_fee,0) ELSE 0 END) AS 'fs',
+	    MAX(CASE tc.city WHEN '厦门' THEN IFNULL(tb.budget_fee,0) ELSE 0 END) AS 'xm',
+	    MAX(CASE tc.city WHEN '东莞' THEN IFNULL(tb.budget_fee,0) ELSE 0 END) AS 'dg',
+	    MAX(CASE tc.city WHEN '区域运营' THEN IFNULL(tb.budget_fee,0) ELSE 0 END) AS 'qyyy',
+	    MAX(CASE tc.city WHEN '珠海' THEN IFNULL(tb.budget_fee,0) ELSE 0 END) AS 'zh',
+	    MAX(CASE tc.city WHEN '海口' THEN IFNULL(tb.budget_fee,0) ELSE 0 END) AS 'hk'
+	    
+	   FROM t_city tc LEFT JOIN t_budget tb ON tc.city_id=tb.city_id  
+	   WHERE tb.apply_quarter IN (${apply_quarter})  
+    GROUP BY tc.city, tb.apply_quarter ) temp GROUP BY temp.apply_quarter
+   </select>
+  
+   
+  
+  
+  <insert id="saveBugget" parameterType="com.zhaopin.report.mapper.model.Budget" >
+    insert into t_budget
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="applyArea != null" >
+        apply_area,
+      </if>
+      <if test="cityId != null" >
+        city_id,
+      </if>
+      <if test="city != null" >
+        city,
+      </if>
+      <if test="applyQuarter != null" >
+        apply_quarter,
+      </if>
+      <if test="budgetFee != null" >
+        budget_fee,
+      </if>
+      <if test="operator != null" >
+        operator,
+      </if>
+      <if test="operatorNo != null" >
+        operator_no,
+      </if>
+      <if test="operatorTime != null" >
+        operator_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="applyArea != null" >
+        #{applyArea,jdbcType=VARCHAR},
+      </if>
+      <if test="cityId != null" >
+        #{cityId,jdbcType=INTEGER},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="applyQuarter != null" >
+        #{applyQuarter,jdbcType=VARCHAR},
+      </if>
+      <if test="budgetFee != null" >
+        #{budgetFee,jdbcType=DECIMAL},
+      </if>
+      <if test="operator != null" >
+        #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorNo != null" >
+        #{operatorNo,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorTime != null" >
+        #{operatorTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateButgetById" parameterType="com.zhaopin.report.mapper.model.Budget" >
+    update t_budget
+    <set >
+      <if test="applyArea != null" >
+        apply_area = #{applyArea,jdbcType=VARCHAR},
+      </if>
+      <if test="cityId != null" >
+        city_id = #{cityId,jdbcType=INTEGER},
+      </if>
+      <if test="city != null" >
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="applyQuarter != null" >
+        apply_quarter = #{applyQuarter,jdbcType=VARCHAR},
+      </if>
+      <if test="budgetFee != null" >
+        budget_fee = #{budgetFee,jdbcType=DECIMAL},
+      </if>
+      <if test="operator != null" >
+        operator = #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorNo != null" >
+        operator_no = #{operatorNo,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorTime != null" >
+        operator_time = #{operatorTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+ 
+</mapper>

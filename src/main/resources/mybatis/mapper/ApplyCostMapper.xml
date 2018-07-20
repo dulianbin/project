@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zhaopin.report.mapper.ApplyCostMapper" >
+  <resultMap id="BaseResultMap" type="com.zhaopin.report.mapper.model.ApplyCost" >
+    <id column="cost_id" property="costId" jdbcType="INTEGER" />
+    <result column="cost_name" property="costName" jdbcType="VARCHAR" />
+    <result column="apply_quarter" property="applyQuarter" jdbcType="VARCHAR" />
+    <result column="city" property="city" jdbcType="VARCHAR" />
+    <result column="dept_id" property="deptId" jdbcType="VARCHAR" />
+    <result column="dept_name" property="deptName" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="username" property="username" jdbcType="VARCHAR" />
+    <result column="cost_type_id" property="costTypeId" jdbcType="INTEGER" />
+    <result column="cost_type_name" property="costTypeName" jdbcType="VARCHAR" />
+    <result column="total_fee" property="totalFee" jdbcType="DECIMAL" />
+    <result column="real_fee" property="realFee" jdbcType="DECIMAL" />
+    <result column="shengyu_fee" property="shengyuFee" jdbcType="DECIMAL" />
+    <result column="apply_area" property="applyArea" jdbcType="VARCHAR" />
+    <result column="apply_time" property="applyTime" jdbcType="TIMESTAMP" />
+    <result column="real_name" property="realName" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="cost_status" property="costStatus" jdbcType="INTEGER" />
+    <result column="city_id" property="cityId" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    cost_id, cost_name, apply_quarter, city_id, city, dept_id, dept_name, user_id, username, cost_type_id, 
+    cost_type_name, total_fee, real_fee, shengyu_fee, apply_area, apply_time, real_name, remark, cost_status
+  </sql>
+  <select id="queryOneById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_apply_cost
+    where cost_id = #{costId,jdbcType=INTEGER}
+  </select>
+  
+  
+   <select id="queryApplyCostListPage" resultMap="BaseResultMap" parameterType="com.zhaopin.report.common.vo.PageData" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_apply_cost where 1=1 
+    
+    <if test="username !=null">
+       AND username=#{username,jdbcType=VARCHAR}
+    </if>
+    <if test="city !=null">
+       AND city in (${city})
+    </if>
+    <if test="applyArea !=null">
+       AND apply_area=#{applyArea,jdbcType=VARCHAR}
+    </if>
+    <if test="realName !=null and realName !=''">
+       AND real_name like '%${realName}%'
+    </if>
+    
+    <if test="costStatus !=null and costStatus !=''">
+       AND cost_status =#{costStatus}
+    </if>
+  </select>
+  
+  <select id="queryYearCityRealFeeList" resultType="java.util.Map" parameterType="com.zhaopin.report.common.vo.PageData" >
+   SELECT temp.apply_quarter,SUM(sz) AS sz , SUM(gz) AS gz , SUM(cs) AS cs, SUM(fz) AS fz, SUM(nc) AS nc, SUM(fs) AS fs, SUM(xm) AS xm, 
+    SUM(dg) AS dg, SUM(qyyy) AS qyyy, SUM(zh) AS zh, SUM(hk) hk
+   
+    FROM ( SELECT tb.apply_quarter,
+    SUM(CASE tc.city WHEN '深圳' THEN IFNULL(tb.real_fee,0) ELSE 0 END) AS 'sz',
+    SUM(CASE tc.city WHEN '广州' THEN IFNULL(tb.real_fee,0) ELSE 0 END) AS 'gz',
+    SUM(CASE tc.city WHEN '长沙' THEN IFNULL(tb.real_fee,0) ELSE 0 END) AS 'cs',
+    SUM(CASE tc.city WHEN '福州' THEN IFNULL(tb.real_fee,0) ELSE 0 END) AS 'fz',
+    SUM(CASE tc.city WHEN '南昌' THEN IFNULL(tb.real_fee,0) ELSE 0 END) AS 'nc',
+    SUM(CASE tc.city WHEN '佛山' THEN IFNULL(tb.real_fee,0) ELSE 0 END) AS 'fs',
+    SUM(CASE tc.city WHEN '厦门' THEN IFNULL(tb.real_fee,0) ELSE 0 END) AS 'xm',
+    SUM(CASE tc.city WHEN '东莞' THEN IFNULL(tb.real_fee,0) ELSE 0 END) AS 'dg',
+    SUM(CASE tc.city WHEN '区域运营' THEN IFNULL(tb.real_fee,0) ELSE 0 END) AS 'qyyy',
+    SUM(CASE tc.city WHEN '珠海' THEN IFNULL(tb.real_fee,0) ELSE 0 END) AS 'zh',
+    SUM(CASE tc.city WHEN '海口' THEN IFNULL(tb.real_fee,0) ELSE 0 END) AS 'hk'
+    
+   FROM t_city tc LEFT JOIN t_apply_cost tb ON tc.city_id=tb.city_id  
+   
+    WHERE tb.apply_quarter IN  (${apply_quarter}) AND tb.cost_status =1   
+    
+   GROUP BY tc.city, tb.apply_quarter ) temp GROUP BY temp.apply_quarter  
+  </select>
+  
+  
+  <select id="queryYearCitytotalFeeList" resultType="java.util.Map" parameterType="com.zhaopin.report.common.vo.PageData" >
+   SELECT temp.apply_quarter,SUM(sz) AS sz , SUM(gz) AS gz , SUM(cs) AS cs, SUM(fz) AS fz, SUM(nc) AS nc, SUM(fs) AS fs, SUM(xm) AS xm, 
+    SUM(dg) AS dg, SUM(qyyy) AS qyyy, SUM(zh) AS zh, SUM(hk) hk
+   
+    FROM ( SELECT tb.apply_quarter,
+    SUM(CASE tc.city WHEN '深圳' THEN IFNULL(tb.total_fee,0) ELSE 0 END) AS 'sz',
+    SUM(CASE tc.city WHEN '广州' THEN IFNULL(tb.total_fee,0) ELSE 0 END) AS 'gz',
+    SUM(CASE tc.city WHEN '长沙' THEN IFNULL(tb.total_fee,0) ELSE 0 END) AS 'cs',
+    SUM(CASE tc.city WHEN '福州' THEN IFNULL(tb.total_fee,0) ELSE 0 END) AS 'fz',
+    SUM(CASE tc.city WHEN '南昌' THEN IFNULL(tb.total_fee,0) ELSE 0 END) AS 'nc',
+    SUM(CASE tc.city WHEN '佛山' THEN IFNULL(tb.total_fee,0) ELSE 0 END) AS 'fs',
+    SUM(CASE tc.city WHEN '厦门' THEN IFNULL(tb.total_fee,0) ELSE 0 END) AS 'xm',
+    SUM(CASE tc.city WHEN '东莞' THEN IFNULL(tb.total_fee,0) ELSE 0 END) AS 'dg',
+    SUM(CASE tc.city WHEN '区域运营' THEN IFNULL(tb.total_fee,0) ELSE 0 END) AS 'qyyy',
+    SUM(CASE tc.city WHEN '珠海' THEN IFNULL(tb.total_fee,0) ELSE 0 END) AS 'zh',
+    SUM(CASE tc.city WHEN '海口' THEN IFNULL(tb.total_fee,0) ELSE 0 END) AS 'hk'
+    
+   FROM t_city tc LEFT JOIN t_apply_cost tb ON tc.city_id=tb.city_id  
+   
+    WHERE tb.apply_quarter IN  (${apply_quarter}) AND tb.cost_status =1   
+    
+   GROUP BY tc.city, tb.apply_quarter ) temp GROUP BY temp.apply_quarter  
+  </select>
+  
+  
+  <select id="queryAllApplyCostList" resultMap="BaseResultMap" parameterType="com.zhaopin.report.common.vo.PageData" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_apply_cost where 1=1 
+    <if test="username !=null">
+       AND username=#{username,jdbcType=VARCHAR}
+    </if>
+    <if test="city !=null">
+       AND city in (${city}) 
+    </if>
+    <if test="applyArea !=null">
+       AND apply_area=#{applyArea,jdbcType=VARCHAR}
+    </if>
+    <if test="realName !=null and realName !=''">
+       AND real_name like '%${realName}%'
+    </if>
+    <if test="costStatus !=null and costStatus !=''">
+       AND cost_status =#{costStatus}
+    </if>
+  </select>
+  
+  
+  <!-- 计算申请余额查询 -->
+  <select id="calCityCostListPage" resultType="java.util.Map" parameterType="com.zhaopin.report.common.vo.PageData" >
+    SELECT tac.apply_quarter,tac.apply_area,tac.city, IFNULL(tb.budget_fee,0) budget_fee1, SUM(IFNULL(tac.total_fee,0)) AS total_fee_sum, SUM(IFNULL(real_fee,0)) AS real_fee_sum , 
+    IFNULL(tb.budget_fee,0)-SUM(IFNULL(tac.total_fee,0)) AS can_apply_fee, IFNULL(tb.budget_fee,0)-SUM(IFNULL(real_fee,0)) AS real_shengyu_fee 
+    FROM t_apply_cost tac LEFT JOIN  t_budget tb ON tac.city_id=tb.city_id AND tac.apply_quarter=tb.apply_quarter 
+    WHERE tac.cost_status =1    
+    <if test="city != null">
+      AND tac.city in (${city})  
+    </if>
+    
+    <if test="search != null and search !=''">
+      AND (tac.city= #{search} OR tac.apply_quarter = #{search})
+    </if>
+    
+    GROUP BY tac.city,tac.apply_quarter
+  </select>
+  
+  
+    <!-- 计算申请余额查询 -->
+  <select id="calCityCostAllList" resultType="java.util.Map" parameterType="com.zhaopin.report.common.vo.PageData" >
+    SELECT tac.apply_quarter,tac.apply_area,tac.city, IFNULL(tb.budget_fee,0) budget_fee1, SUM(IFNULL(tac.total_fee,0)) AS total_fee_sum, SUM(IFNULL(real_fee,0)) AS real_fee_sum , 
+    IFNULL(tb.budget_fee,0)-SUM(IFNULL(tac.total_fee,0)) AS can_apply_fee, IFNULL(tb.budget_fee,0)-SUM(IFNULL(real_fee,0)) AS real_shengyu_fee 
+    FROM t_apply_cost tac LEFT JOIN  t_budget tb ON tac.city_id=tb.city_id AND tac.apply_quarter=tb.apply_quarter 
+    WHERE tac.cost_status =1    
+    <if test="city != null">
+      AND tac.city in (${city})  
+    </if>
+    
+    <if test="search != null and search !=''">
+      AND (tac.city= #{search} OR tac.apply_quarter = #{search})
+    </if>
+    
+    GROUP BY tac.city,tac.apply_quarter
+  </select>
+  
+  
+   <!-- 动态查询各部门各季度费用 -->
+   <select id="queryQuarterAllFee" resultType="java.util.Map" parameterType="com.zhaopin.report.common.vo.PageData" >
+      SELECT temp.dept_name,
+       MAX(CASE temp.apply_quarter WHEN '${quarter_1}' THEN IFNULL(temp.total_fee_sum,0) ELSE 0 END) AS 'quarter_1',
+       MAX(CASE temp.apply_quarter WHEN '${quarter_2}' THEN IFNULL(temp.total_fee_sum,0) ELSE 0 END) AS 'quarter_2',
+	   MAX(CASE temp.apply_quarter WHEN '${quarter_3}' THEN IFNULL(temp.total_fee_sum,0) ELSE 0 END) AS 'quarter_3',
+	   MAX(CASE temp.apply_quarter WHEN '${quarter_4}' THEN IFNULL(temp.total_fee_sum,0) ELSE 0 END) AS 'quarter_4'
+      FROM 
+     ( SELECT tac.dept_name,tac.apply_quarter, SUM(IFNULL(tac.total_fee,0)) AS total_fee_sum FROM t_apply_cost tac 
+     WHERE tac.city=#{city} AND tac.cost_status =1 GROUP BY tac.dept_name, tac.apply_quarter) temp  GROUP BY temp.dept_name
+  </select>
+  
+  
+  
+  
+  
+  <delete id="deleteById" parameterType="java.lang.Integer" >
+    delete from t_apply_cost
+    where cost_id = #{costId,jdbcType=INTEGER}
+  </delete>
+  <insert id="saveApplyCost" parameterType="com.zhaopin.report.mapper.model.ApplyCost" >
+    insert into t_apply_cost
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="costId != null" >
+        cost_id,
+      </if>
+      <if test="costName != null" >
+        cost_name,
+      </if>
+      <if test="applyQuarter != null" >
+        apply_quarter,
+      </if>
+      <if test="city != null" >
+        city,
+      </if>
+      <if test="deptId != null" >
+        dept_id,
+      </if>
+      <if test="deptName != null" >
+        dept_name,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="username != null" >
+        username,
+      </if>
+      <if test="costTypeId != null" >
+        cost_type_id,
+      </if>
+      <if test="costTypeName != null" >
+        cost_type_name,
+      </if>
+      <if test="totalFee != null" >
+        total_fee,
+      </if>
+      <if test="realFee != null" >
+        real_fee,
+      </if>
+      <if test="shengyuFee != null" >
+        shengyu_fee,
+      </if>
+      <if test="applyArea != null" >
+        apply_area,
+      </if>
+      <if test="applyTime != null" >
+        apply_time,
+      </if>
+      <if test="realName != null" >
+        real_name,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="costStatus != null" >
+        cost_status,
+      </if>
+      
+      <if test="cityId != null" >
+        city_id,
+      </if>
+      
+      
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="costId != null" >
+        #{costId,jdbcType=INTEGER},
+      </if>
+      <if test="costName != null" >
+        #{costName,jdbcType=VARCHAR},
+      </if>
+      <if test="applyQuarter != null" >
+        #{applyQuarter,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="deptId != null" >
+        #{deptId,jdbcType=VARCHAR},
+      </if>
+      <if test="deptName != null" >
+        #{deptName,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="username != null" >
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="costTypeId != null" >
+        #{costTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="costTypeName != null" >
+        #{costTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="totalFee != null" >
+        #{totalFee,jdbcType=DECIMAL},
+      </if>
+      <if test="realFee != null" >
+        #{realFee,jdbcType=DECIMAL},
+      </if>
+      <if test="shengyuFee != null" >
+        #{shengyuFee,jdbcType=DECIMAL},
+      </if>
+      <if test="applyArea != null" >
+        #{applyArea,jdbcType=VARCHAR},
+      </if>
+      <if test="applyTime != null" >
+        #{applyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="realName != null" >
+        #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="costStatus != null" >
+         #{costStatus,jdbcType=INTEGER},
+      </if>
+      <if test="cityId != null" >
+        #{cityId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateById" parameterType="com.zhaopin.report.mapper.model.ApplyCost" >
+    update t_apply_cost
+    <set >
+      <if test="costName != null" >
+        cost_name = #{costName,jdbcType=VARCHAR},
+      </if>
+      <if test="applyQuarter != null" >
+        apply_quarter = #{applyQuarter,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="deptId != null" >
+        dept_id = #{deptId,jdbcType=VARCHAR},
+      </if>
+      <if test="deptName != null" >
+        dept_name = #{deptName,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="username != null" >
+        username = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="costTypeId != null" >
+        cost_type_id = #{costTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="costTypeName != null" >
+        cost_type_name = #{costTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="totalFee != null" >
+        total_fee = #{totalFee,jdbcType=DECIMAL},
+      </if>
+      <if test="realFee != null" >
+        real_fee = #{realFee,jdbcType=DECIMAL},
+      </if>
+      <if test="shengyuFee != null" >
+        shengyu_fee = #{shengyuFee,jdbcType=DECIMAL},
+      </if>
+      <if test="applyArea != null" >
+        apply_area = #{applyArea,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="costStatus != null" >
+         cost_status = #{costStatus,jdbcType=INTEGER},
+      </if>
+      <if test="cityId != null" >
+        city_id=#{cityId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where cost_id = #{costId,jdbcType=INTEGER}
+  </update>
+  
+  
+  
+  
+</mapper>

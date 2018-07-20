@@ -1,0 +1,176 @@
+.headTitle{
+	width: 100%;
+	height: 1.1rem;
+	line-height: 1.14rem;
+	text-align: center;
+	background: #2cced1;
+	color: #ffffff;
+	font-size: 0.31rem;
+	font-weight: 600;
+	position: fixed;
+	left: 0;
+	top: 0;
+}
+.days{
+	width: 100%;
+	background: white;
+	color: #666666;
+	font-size: 0.24rem;
+	position: fixed;
+	left: 0;
+	top: 1.1rem;
+	box-shadow: 0px 1px 5px 3px #dad7d4;
+}
+.swiper-container{
+	width: 100%;
+	height:0.88rem;
+	overflow: hidden;
+}
+.swiper-container .swiper-slide{
+	/*height:0.88rem;*/
+	/*float: left;*/
+	display: flex;
+	justify-content: center;
+	flex-flow: column nowrap; 
+	align-items: center;
+}
+.swiper-slide p:nth-of-type(2){
+	font-size: 0.16rem;
+}
+.outcle{
+	display: flex;
+	justify-content: center;
+	flex-flow: column nowrap; 
+	align-items: center;
+}
+.outcle.active{
+	width: 0.7rem;
+	height: 0.7rem;
+	border-radius: 50%;
+	border: 0.03rem solid #2cced1;
+}
+.outcle.active p{
+	color: #2cced1;
+}
+.mainBox{
+	font-size: 0.16rem;
+	padding:2.1rem 0 1rem;
+}
+.listItem{
+	padding: 0.18rem 0.37rem;
+	border-bottom:0.04rem solid #eaebef;
+	overflow: hidden;
+}
+.aixin{
+	width: 0.37rem;
+	height: 0.37rem;
+	margin-top: 0.2rem;
+	background: url(../../images/weixin/huixing.png) no-repeat center center;
+	background-size: 100%;
+	float: left;
+}
+.aixin.active{
+	background: url(../../images/weixin/hongxing.png) no-repeat center center;
+	background-size: 100%;
+}
+.listCenter{
+	float: left;
+	width: 3.8rem;
+	margin-left: 0.4rem;
+}
+.detailsTitle{
+	
+	background: #ffffff;
+	color:#464646;
+	font-size: 0.25rem;
+	
+}
+.detailsTitle em{
+	font-weight: 600;
+}
+.detailsTitle i{
+	margin: 0 0.12rem;
+}
+.detailsCon{
+	width: 100%;
+	margin-top: 0.1rem;
+	font-size: 0.16rem;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.checkDetails{
+	float: right;
+	padding: 0 0.1rem;
+	height: 0.3rem;
+	line-height: 0.34rem;
+	color: #2cced1;
+	border-radius: 30px;
+	border: 0.03rem solid #2cced1;
+	text-align: center;
+	font-size: 0.2rem;
+	margin-top: 0.2rem;
+}
+
+.footer{
+	width: 100%;
+	height: 0.85rem;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	z-index: 30;
+	background: #eaebef;
+	opacity: 0.9;
+	border-top: 1px solid #eceae4;
+}
+.footer ul{
+	height: 100%;
+}
+.footer li{
+	width:33.3%;
+    height: 100%;
+    float: left;
+    font-size: 0.2rem;
+    text-align: center;
+    
+}
+.footer li a{
+	width:100%;
+    height: 100%;
+    padding-top: 0.1rem;
+    box-sizing: border-box;
+    display: flex;
+    flex-flow:column nowrap; 
+    justify-content: center;
+}
+.footer li em{
+	display: block;
+	align-self: center;
+}
+.footer li i{
+    font-size: 0.2rem;
+    text-align: center;
+    color: #666666;
+    display: block;
+}
+.pub em{
+	width: 0.33rem;
+	height: 0.33rem;
+	display: block;
+    background: url(../../images/weixin/farenwu.png) no-repeat center center;
+    background-size: 100%;
+}
+.note em{
+	width: 0.32rem;
+	height: 0.34rem;
+	display: block;
+    background: url(../../images/weixin/renwutie.png) no-repeat center center;
+    background-size: 100%;
+}
+.nearby em{
+	width: 0.25rem;
+	height: 0.34rem;
+	display: block;
+    background: url(../../images/weixin/fujin-hui.png) no-repeat center center;
+    background-size: 100%;
+}
