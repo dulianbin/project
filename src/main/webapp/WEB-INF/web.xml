@@ -6,15 +6,15 @@
 	  <display-name>financialReport</display-name>
   <context-param>
     <param-name>webAppRootKey</param-name>
-    <param-value>financialReport-web.root</param-value>
+    <param-value>project-web.root</param-value>
   </context-param>
-  <context-param>
+<!--   <context-param>
     <param-name>log4jConfigLocation</param-name>
     <param-value>classpath:log4j.properties</param-value>
   </context-param>
   <listener>
     <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
-  </listener>
+  </listener> -->
   <context-param>
     <param-name>contextConfigLocation</param-name>
     <param-value>classpath*:spring/application*.xml</param-value>
@@ -25,12 +25,7 @@
   <listener>
     <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
   </listener>
-  <listener>
-    <listener-class>com.zhaopin.report.init.ContextLisenter</listener-class>
-  </listener>
-  	<listener>
-		<listener-class>com.zhaopin.report.init.SessionListener</listener-class> 
-	</listener>
+
   
   
 <filter>
@@ -110,38 +105,8 @@
     <servlet-name>default</servlet-name>
     <url-pattern>*.otf</url-pattern>
   </servlet-mapping>
-  <!-- <filter>
-    <filter-name>shiroFilter</filter-name>
-    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-    <init-param>
-      <param-name>targetFilterLifecycle</param-name>
-      <param-value>true</param-value>
-    </init-param>
-  </filter>
-  <filter-mapping>
-    <filter-name>shiroFilter</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>-->
-  <servlet> 
-    <servlet-name>ImageServlet</servlet-name>
-    <servlet-class>com.zhaopin.report.servlet.ImageServlet</servlet-class>
-    <init-param>
-      <param-name>width</param-name>
-      <param-value>65</param-value>
-    </init-param>
-    <init-param>
-      <param-name>height</param-name>
-      <param-value>23</param-value>
-    </init-param>
-    <init-param>
-      <param-name>codeCount</param-name>
-      <param-value>4</param-value>
-    </init-param>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>ImageServlet</servlet-name>
-    <url-pattern>/ImageServlet</url-pattern>
-  </servlet-mapping>
+
+  
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
     <welcome-file>default.html</welcome-file>
