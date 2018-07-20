@@ -383,11 +383,16 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.6.2</version>
                 <configuration>
+                 <fork>true</fork>
+                 <executable>D:\java82\bin\javac.exe</executable>
+                </configuration>
+                <!-- <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
                     <encoding>UTF-8</encoding>
                     <showWarnings>true</showWarnings>
                 </configuration>
+                -->
             </plugin>
         </plugins>
 </build>
