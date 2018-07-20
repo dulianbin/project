@@ -30,7 +30,6 @@ public class BudgetServiceImpl extends BaseServiceImpl<Budget> implements  Budge
 	@Autowired
 	private BudgetMapper budgetMapper;
 	
-	@Override
 	public Map<String,Object> saveBugget(HttpServletRequest httpRequest,User user) {
 		
 		try{
@@ -78,12 +77,10 @@ public class BudgetServiceImpl extends BaseServiceImpl<Budget> implements  Budge
 		}
 	}
 
-	@Override
 	public Budget queryOneById(Integer id) {
 		return budgetMapper.queryOneById(id);
 	}
 
-	@Override
 	public Map<String,Object> updateButgetById(HttpServletRequest httpRequest,User user) {
 		try {
 	        String id=httpRequest.getParameter("id");
@@ -120,7 +117,6 @@ public class BudgetServiceImpl extends BaseServiceImpl<Budget> implements  Budge
 		}
 	}
 
-	@Override
 	public List<Budget> queryBudgetListPage(PageData pd,User user) {
 		Integer roleId=user.getRole_id();
 		if(roleId==2){ //分公司财务
@@ -129,7 +125,6 @@ public class BudgetServiceImpl extends BaseServiceImpl<Budget> implements  Budge
 		return budgetMapper.queryBudgetListPage(pd);
 	}
 
-	@Override
 	public List<Budget> queryAllBudgetList(PageData pd,User user) {
 		Integer roleId=user.getRole_id();
 		if(roleId==2){ //分公司财务
@@ -138,7 +133,6 @@ public class BudgetServiceImpl extends BaseServiceImpl<Budget> implements  Budge
 		return budgetMapper.queryBudgetListPage(pd);
 	}
 
-	@Override
 	protected BaseMapper<Budget> getBaseMapper() {
 		return budgetMapper;
 	}

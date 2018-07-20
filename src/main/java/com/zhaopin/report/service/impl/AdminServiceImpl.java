@@ -37,7 +37,6 @@ public class AdminServiceImpl  extends BaseServiceImpl<User> implements AdminSer
 	}
 	
 	
-	@Override
 	public User login(PageData pd) {
 		try {
 			User user=new User();
@@ -103,7 +102,6 @@ public class AdminServiceImpl  extends BaseServiceImpl<User> implements AdminSer
 	}
 
 
-	@Override
 	public List<City> queryCityList(PageData pd) {
 		return userMaper.queryCityList(pd);
 	}

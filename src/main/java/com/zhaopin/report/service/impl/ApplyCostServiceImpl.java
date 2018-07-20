@@ -42,7 +42,6 @@ public class ApplyCostServiceImpl  extends BaseServiceImpl<ApplyCost> implements
 		return applyCostMapper;
 	}
 
-	@Override
 	public Map<String,Object> saveApplyCost(HttpServletRequest httpRequest, User loginInfo) {
 		
 		ApplyCost applyCost=new ApplyCost();
@@ -81,12 +80,10 @@ public class ApplyCostServiceImpl  extends BaseServiceImpl<ApplyCost> implements
 		}
 	}
 
-	@Override
 	public ApplyCost queryOneById(Integer costId) {
 		return null;
 	}
 
-	@Override
 	public List<ApplyCost> queryApplyCostListPage(PageData pd,User loginInfo) {
 		
 		if(loginInfo==null){
@@ -105,7 +102,6 @@ public class ApplyCostServiceImpl  extends BaseServiceImpl<ApplyCost> implements
 		return applyCostMapper.queryApplyCostListPage(pd);
 	}
 
-	@Override
 	public List<ApplyCost> queryAllApplyCostList(PageData pd,User loginInfo) {
 		if(loginInfo==null){
 			return null;
@@ -122,7 +118,6 @@ public class ApplyCostServiceImpl  extends BaseServiceImpl<ApplyCost> implements
 		return applyCostMapper.queryAllApplyCostList(pd);
 	}
 
-	@Override
 	public Map<String,Object> updateCostApplyStatusById(PageData pd) {
 		try{
 			if(pd.get("costId")==null || StringUtil.isEmpty(pd.get("costId").toString())){
@@ -144,7 +139,6 @@ public class ApplyCostServiceImpl  extends BaseServiceImpl<ApplyCost> implements
 		
 	}
 
-	@Override
 	public List<Map<String,Object>> calCityCostListPage(PageData pd, User loginInfo) {
 		try{
 			if(loginInfo==null){
@@ -161,7 +155,6 @@ public class ApplyCostServiceImpl  extends BaseServiceImpl<ApplyCost> implements
 		}
 	}
 	
-	@Override
 	public List<Map<String,Object>> calCityCostAllList(PageData pd, User loginInfo) {
 		try{
 			if(loginInfo==null){
@@ -179,7 +172,6 @@ public class ApplyCostServiceImpl  extends BaseServiceImpl<ApplyCost> implements
 	}
 	
 
-	@Override
 	public List<Map<String, Object>> queryQuarterAllFee(PageData pd) {
 		try{
 			pd.put("quarter_1", pd.get("quarter")+"1");
@@ -239,7 +231,6 @@ public class ApplyCostServiceImpl  extends BaseServiceImpl<ApplyCost> implements
 		return quarter_1.add(quarter_2).add(quarter_3).add(quarter_4);
 	}
 
-	@Override
 	public List<Map<String, Object>> queryYearBudgetFeeList(PageData pd) {
 		try{
 			List<Map<String,Object>> allList=new ArrayList<Map<String,Object>>();
