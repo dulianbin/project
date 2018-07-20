@@ -43,10 +43,8 @@ public class JsonUtil {
 		ObjectMapper objMapper = getMapperInstance(false);
 		try {
 			return objMapper.writeValueAsString(object);
-		} catch (JsonGenerationException | JsonMappingException e) {
+		} catch (Exception e) {
 			log.info("JSON exception", e);
-		} catch (IOException e) {
-			log.info("JSON ioexception", e);
 		} 
 		return null;
 	}
@@ -61,11 +59,9 @@ public class JsonUtil {
 		objMapper.setSerializationInclusion(Inclusion.NON_DEFAULT);
 		try {
 			return objMapper.writeValueAsString(object);
-		} catch (JsonGenerationException | JsonMappingException e) {
+		} catch (Exception e) {
 			log.info("JSON exception", e);
-		} catch (IOException e) {
-			log.info("JSON ioexception", e);
-		} 
+		}
 		return null;
 	}
 	
@@ -74,9 +70,7 @@ public class JsonUtil {
 		objMapper.setSerializationInclusion(Inclusion.NON_EMPTY);
 		try {
 			return objMapper.writeValueAsString(object);
-		} catch (JsonGenerationException | JsonMappingException e) {
-			log.info("JSON exception", e);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			log.info("JSON ioexception", e);
 		} 
 		return null;
@@ -92,9 +86,7 @@ public class JsonUtil {
 		objMapper.setSerializationInclusion(Inclusion.NON_NULL);
 		try {
 			return objMapper.writeValueAsString(object);
-		} catch (JsonGenerationException | JsonMappingException e) {
-			log.info("JSON exception", e);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			log.info("JSON ioexception", e);
 		} 
 		return null;
